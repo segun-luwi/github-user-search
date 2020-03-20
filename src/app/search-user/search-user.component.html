@@ -1,0 +1,55 @@
+<br>
+<div class="container">
+  <!-- Search Form to find Users on Github -->
+  <form [formGroup]="searchForm" (ngSubmit)="search()">
+    <div [ngClass]="{ 'has-error': isSubmitted && formControls.search.errors }">
+      <h2> Search more than 51M users on Github</h2>
+      <div class="row">
+        <div class="col-sm-12 col-md-9">
+          <input class="form-control" autofocus placeholder="Search User" formControlName="search">
+          <div *ngIf="isSubmitted && formControls.search.errors" class="help-block">
+            <p *ngIf="formControls.search.errors.required">
+              Search Input is <strong>required</strong>
+            </p>
+          </div>
+        </div>
+        <div class="col-xs-12 col-md-2 center">
+          <button mat-raised-button color="primary">Search</button>
+        </div>
+      </div>
+    </div>
+  </form>
+  <!--/ Search Form End-->
+
+  <br class="clearfix">
+  <!-- If no internet access or error occurs -->
+  <p *ngIf="error">Unable to process request, please check your internet and try again</p>
+  <!--/ No internet End-->
+
+  <!-- Display of Search Result -->
+  <div *ngIf="searchResult" id="searchResult">
+    <mat-list>
+      <h3 *ngIf="searchResult">Total Users Found {{searchResult.total_count}}</h3>
+      <mat-list-item *ngFor="let user of searchResult.items | paginate: { itemsPerPage: 10,
+        currentPage: page,
+        totalItems: total_count }; last as last">
+        <a class="no-style" href="{{user.url}}" target="_blank">
+          <img mat-line src="{{user.avatar_url}}" width="100px" height="100px">
+          <h4 mat-line><a color="primary" href="{{user.html_url}}" target="_blank">{{user.name}} &nbsp; &nbsp; <span class="text-muted">{{user.login}}</span></a></h4>
+          <h4 mat-line>{{user.bio}}</h4>
+          <h6 mat-line class="text-muted">{{user.location}} &nbsp; &nbsp; {{user.email}}</h6>
+          <h5 mat-line>Followers: {{user.followers}}</h5>
+          <h5 mat-line>Following: {{user.following}}</h5>
+          <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
+         </a>
+      </mat-list-item>
+    </mat-list>
+    <!-- Display of Pagination -->
+    <div *ngIf="total_count>0">
+      <a href="#searchResult"><pagination-controls (click)="getPage(page)" (pageChange)="page = $event"></pagination-controls></a>
+    </div>
+    <!-- End of Pagination -->
+  </div>
+  <!--/ End of Serach Result-->
+
+</div>
